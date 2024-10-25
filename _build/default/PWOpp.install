@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/PWOpp/META"
+  "_build/install/default/lib/PWOpp/dune-package"
+  "_build/install/default/lib/PWOpp/opam"
+]
+bin: [
+  "_build/install/default/bin/PWOpp"
+]

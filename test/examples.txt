@@ -1,0 +1,9 @@
+
+SUMA(x_1...x_n):
+	S:=x_1
+	FOR i=2 TO n
+		[S:= S+x_i
+	RETURN(S)
+
+
+
