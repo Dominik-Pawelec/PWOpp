@@ -1,4 +1,3 @@
-
 exception Lexer_Error of string
 ;;
 
@@ -14,14 +13,15 @@ type operator =
     | VERT_LINE       | DOUBLE_DOT| EQUAL       | LESS             | MORE              | LESS_EQUAL
     | MORE_EQUAL      | NOT_EQUAL | ALMOST_EQUAL| LESS_ALMOST_EQUAL| MORE_ALMOST_EQUAL
     | NOT_ALMOST_EQUAL| VERY_EQUAL| ASSIGN      | DOTDOTDOT        | FLOOR_LINE
-    | L_PAREN         | R_PAREN   | L_BRACKET   | R_BRACKET        | INVALID_OPERATOR
+    | L_PAREN         | R_PAREN   | L_BRACKET   | R_BRACKET        | L_BRACE |R_BRACE
+    | INVALID_OPERATOR
 ;;
 let operator_map = LexerMap.of_list [
     ("+", PLUS); ("-", MINUS); ("*", MULT); ("/", L_SLASH); ("%", PERCENT); ("&", AND); ("^", POW);
     ("|", VERT_LINE); (":", DOUBLE_DOT); ("=", EQUAL); ("<", LESS); (">", MORE); ("<=", LESS_EQUAL);
     (">=", MORE_EQUAL); ("!=", NOT_EQUAL); ("=~", ALMOST_EQUAL); ("<=~", LESS_ALMOST_EQUAL); (">=~", MORE_ALMOST_EQUAL);
     ("!=~", NOT_ALMOST_EQUAL); ("==", VERY_EQUAL); (":=", ASSIGN); ("...", DOTDOTDOT); ("_", FLOOR_LINE);
-    ("(", L_PAREN); (")", R_PAREN); ("[", L_BRACKET); ("]", R_BRACKET)
+    ("(", L_PAREN); (")", R_PAREN); ("[", L_BRACKET); ("]", R_BRACKET); ("{",L_BRACE); ("}",R_BRACE)
 ]
 ;;
 type keyword = 
@@ -49,24 +49,24 @@ let getNext input =
     (String.get input 0, String.sub input 1 ((String.length input)-1))
 ;;
 let operatorDivisor text =
-    let toTokenOperator text : token = 
+    let toTokenOperator text : token =
         match LexerMap.find_opt text operator_map with
             | Some(x) -> Operator(x)
             | None -> Operator(INVALID_OPERATOR)
         in
-    let rec scanner_rec text curr_analysed output =
-        if text = "" then if curr_analysed = "" then (toTokenOperator curr_analysed)::output
-                        else output
-        else let next_char = fst (getNext text) and text' = snd (getNext text) in
-        let new_analysed = curr_analysed ^^ next_char in
+    let rec scanner_rec text curr_analysed output is_repeating =
+        if text = "" then (toTokenOperator curr_analysed)::output
+        else let next_char = fst (getNext text) and text' = snd (getNext text) in 
+        let new_analysed = curr_analysed ^^ next_char in print_endline new_analysed ;
         let f_temp x =  LexerMap.is_empty (LexerMap.filter 
             (fun s _ -> if String.length s < String.length x then false
             else String.sub s 0 (String.length x) = x)
             operator_map)
         in match f_temp new_analysed with
-        | true -> scanner_rec text "" ((toTokenOperator curr_analysed)::output)
-        | false  ->  scanner_rec text' new_analysed output
-    in scanner_rec text "" []
+        | false  ->  scanner_rec text' new_analysed output false
+        | true ->if is_repeating then scanner_rec text' "" output false
+                else scanner_rec text "" ((toTokenOperator curr_analysed)::output) true
+    in scanner_rec text "" [] false
 ;;
 let toToken text (state : stateMachine) =
     match state with
