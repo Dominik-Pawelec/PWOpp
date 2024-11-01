@@ -1,13 +1,9 @@
 exception Lexer_Error of string
 ;;
-
 let (^^) str chr = str^(String.make 1 chr)  
 ;;
-
-
 module LexerMap = Map.Make(String)
 ;;
-
 type operator =
     | PLUS            | MINUS     | MULT        | L_SLASH          | PERCENT           | AND       | POW
     | VERT_LINE       | DOUBLE_DOT| EQUAL       | LESS             | MORE              | LESS_EQUAL
@@ -25,10 +21,11 @@ let operator_map = LexerMap.of_list [
 ]
 ;;
 type keyword = 
-    | FOR | TO | RETURN  | IF | THEN | ELSE | WHILE
+    | FOR | TO | RETURN  | IF | THEN | ELSE | WHILE | TRUE | FALSE
 ;;
 let keyword_map = LexerMap.of_list [
-    ("FOR", FOR); ("TO", TO); ("RETURN", RETURN); ("IF", IF); ("THEN", THEN); ("ELSE", ELSE); ("WHILE", WHILE)
+    ("FOR", FOR); ("TO", TO); ("RETURN", RETURN); ("IF", IF); ("THEN", THEN); ("ELSE", ELSE); 
+    ("WHILE", WHILE); ("T", TRUE); ("NIL", FALSE)
 ]
 ;;
 type token =
@@ -43,8 +40,6 @@ type stateMachine =
     | Empty    | Number_Int    | Number_Float
     | String   | Literal       | Operator
 ;;
-
-
 let getNext input =
     (String.get input 0, String.sub input 1 ((String.length input)-1))
 ;;

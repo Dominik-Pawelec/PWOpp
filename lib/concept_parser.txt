@@ -1,0 +1,27 @@
+primitive:
+	int 1
+	float 1.2343
+	boolean T, NIL
+	string 'hello'
+	Identifier var
+
+	
+//TODO: allow for lists(not lists of _ but actual lists)
+
+expression:
+	primitive -> 2, 'aab'
+	binop -> expression (binop_op) expression
+	functionCall -> Identifier( list of expression )//swap identifier with primitive to make soemthing horific
+	
+block:
+	expression
+	definefunction(defun) -> Identifier(list of Identifier):{blocks}
+	definevariable(devar) -> Identifier := expression
+	FOR -> FOR Identifier = int TO int:{blocks}
+	IF -> IF expression THEN blocks ELSE blocks
+	WHILE -> WHILE expression:{blocks}
+	RETURN -> RETURN(expression)
+
+blocks: list of block
+
+
