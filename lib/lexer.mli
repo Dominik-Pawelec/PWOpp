@@ -1,5 +1,5 @@
 type operator =
-    PLUS
+  | PLUS
   | MINUS
   | MULT
   | L_SLASH

@@ -93,7 +93,7 @@ let tokenizer input =
                 )
         | Literal -> let next_char = fst (getNext input) and input' = snd (getNext input) in
                 ( match next_char with
-                | 'a'..'z'|'A'..'Z' -> tokenizer_rec input' (curr_analysed ^^ next_char) state output
+                | 'a'..'z'|'A'..'Z'|'0'..'9' -> tokenizer_rec input' (curr_analysed ^^ next_char) state output
                 | _ -> tokenizer_rec input "" Empty ((toToken curr_analysed state)@output)
                 )
         | String -> let next_char = fst (getNext input) and input' = snd (getNext input) in

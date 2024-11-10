@@ -2,3 +2,6 @@
 
 (** @canonical PWOpp.Lexer *)
 module Lexer = PWOpp__Lexer
+
+(** @canonical PWOpp.Parser *)
+module Parser = PWOpp__Parser
